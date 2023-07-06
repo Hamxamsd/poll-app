@@ -13,7 +13,7 @@ const io = require('socket.io')(server);
 require('dotenv').load();
 require('./app/config/passport.js')(passport);
 
-mongoose.connect(process.env.MONGO_URI);
+mongoose.connect(process.env.MONGO_URI, { useUnifiedTopology: true, useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 
 app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
