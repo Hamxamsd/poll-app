@@ -1,6 +1,6 @@
 "use strict";
 
-var GitHubStrategy = require("passport-github").Strategy;
+// var GitHubStrategy = require("passport-github").Strategy;
 var User = require("../models/users");
 var LocalStrategy = require("passport-local").Strategy;
 var crypto = require("crypto");
@@ -16,19 +16,34 @@ module.exports = function (passport) {
         usernameField: "email",
         passwordField: "password",
       },
-      function (username, password, done) {
-        User.findOne({ email: username }, function (err, user) {
-          if (err) {
-            return done(err);
+      async function (username, password, done) {
+
+        try {
+          const user = await User.findOne({ email: username});
+          if (!user){
+            return done(null, false, { message: "Incorrect username."});
           }
-          if (!user) {
-            return done(null, false, { message: "Incorrect username." });
-          }
-          if (!validPassword(password, user)) {
+          if (!validPassword(password, user)){
             return done(null, false, { message: "Incorrect password." });
           }
           return done(null, user.id);
-        });
+        } catch (e){
+          return done(e);
+        }
+
+
+        // User.findOne({ email: username }, function (err, user) {
+        //   if (err) {
+        //     return done(err);
+        //   }
+        //   if (!user) {
+        //     return done(null, false, { message: "Incorrect username." });
+        //   }
+        //   if (!validPassword(password, user)) {
+        //     return done(null, false, { message: "Incorrect password." });
+        //   }
+        //   return done(null, user.id);
+        // });
       }
     )
   );
