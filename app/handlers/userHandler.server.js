@@ -62,9 +62,9 @@ function UserHandler(passport) {
     }
   };
 
-  this.changePassword = function (req, res) {
-    Users.findById(req.user, (err, user) => {
-      if (err) return res.status(400).send(err);
+  this.changePassword = async function (req, res) {
+    try {
+      const user = await Users.findById(req.user);
       if (!validPassword(req.body.current_password, user)) {
         return res.status(400).send("Invalid Current Password");
       }
@@ -76,11 +76,11 @@ function UserHandler(passport) {
         .digest("hex");
       user.hashed_password = hashed_password;
       user.salt = temp;
-      user.save((err) => {
-        if (err) return res.status(400).send(err);
-        res.status(200).send("Password successfully updated");
-      });
-    });
+      await user.save();
+      res.status(200).send("Password successfully updated");
+    } catch (e) {
+      res.status(400).send(e);
+    }
   };
   var validPassword = function (password, user) {
     let temp = user.salt;
