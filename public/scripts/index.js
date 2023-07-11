@@ -3,6 +3,7 @@ var home = $('#nav-home');
 var signup = $('#nav-signup');
 var signup2 = $('#signuptoday');
 var login = $('#nav-login');
+var login2 = $('#logintoday');
 var index_jumbotron = $('#index-jumbotron');
 var login_container = $('#login-container');
 var signup_container = $('#signup-container');
@@ -44,9 +45,6 @@ if (localStorage.getItem('token')) {
             xhr.setRequestHeader("Authorization", 'Bearer ' + localStorage.token);
         }
     }).done(function (response, textStatus, jqXHR) {
-        console.log('done background');
-        console.log(textStatus);
-        console.log(jqXHR.getAllResponseHeaders());
         $('html').prop('innerHTML', response);
         getUserDetails();
 
@@ -107,7 +105,6 @@ var getUserDetails = function () {
             xhr.setRequestHeader("Authorization", 'Bearer ' + localStorage.token);
         }
     }).done(function (response) {
-        console.log(response);
         user = response;
         helloMessage.html('Hello ' + JSON.parse(response).name);
 
@@ -181,7 +178,6 @@ function setUpMyPollContainer() {
                 e.preventDefault();
                 setUpChartContainer(resp[myPolls.index(this)]._id);
             })
-
 
         }
     });
@@ -400,10 +396,10 @@ $(document).ready(function () {
         signup_container.show();
     });
 
-    signup2.on('click', () => {
+    login2.on('click', () => {
         index_jumbotron.hide();
-        login_container.hide();
-        signup_container.show();
+        signup_container.hide();
+        login_container.show();
     });
 
     home.on('click', () => {
@@ -422,7 +418,6 @@ $(document).ready(function () {
 
     login_form.submit((e) => {
         e.preventDefault();
-
         $.post('/login', login_form.serialize(), (data) => {
             console.log(data);
             localStorage.setItem('token', data.token);
@@ -447,7 +442,6 @@ $(document).ready(function () {
 })
 var setSelected = (e) => {
     this.childNodes[0].html('<span class="sr-only">(current)');
-
 }
 
 var makeAjaxCall = (url, method, data2, callback) => {
